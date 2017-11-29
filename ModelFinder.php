@@ -89,7 +89,7 @@ class ModelFinder
         return $sth->fetchAll();
     }
 
-    public function findBy(array $conditions, array $orderBy=['id'=>'asc'], $offset=0, $limit=12){
+    protected function generateFindBySQL(array $conditions, array $orderBy=['id'=>'asc'], $offset=0, $limit=12){
         $columns = implode(',', $this->columns);
         $sqlStart = "SELECT id, {$columns} FROM {$this->table} ";
         $where = " WHERE 1=1 ";
@@ -117,8 +117,24 @@ class ModelFinder
         $sorting = substr($sorting, 0, -1);
         $limit = " LIMIT {$offset}, {$limit}";
         $sql = $sqlStart.$where.$sorting.$limit;
+        return [
+            $sql,
+            $params,
+        ];
+    }
+
+    public function findBy(array $conditions, array $orderBy=['id'=>'asc'], $offset=0, $limit=12){
+        list($sql, $params) = $this->generateFindBySQL($conditions, $orderBy, $offset, $limit);
+
         $sth = $this->pdo->prepare($sql);
         $sth->setFetchMode(\PDO::FETCH_CLASS, $this->modelName);
+        $sth->execute($params);
+        return $sth->fetchAll();
+    }
+
+    public function findByWithArr(array $conditions, array $orderBy=['id'=>'asc'], $offset=0, $limit=12){
+        list($sql, $params) = $this->generateFindBySQL($conditions, $orderBy, $offset, $limit);
+        $sth = $this->pdo->prepare($sql);
         $sth->execute($params);
         return $sth->fetchAll();
     }
