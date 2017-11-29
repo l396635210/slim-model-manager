@@ -38,11 +38,4 @@ class ModelHelper
         return self::$mapping[strtolower($type)];
     }
 
-    public function bindParam(\PDOStatement &$statement, $param, $value, $fieldInfo){
-        $pdoType = $this->fetchPdoTypeByFieldInfo($fieldInfo);
-
-
-        var_dump($pdoType==\PDO::PARAM_STR);
-        $statement->bindColumn(":{$param}", $value, $pdoType, 20);
-    }
 }

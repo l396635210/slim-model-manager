@@ -66,6 +66,9 @@ class ModelFinder
         ];
     }
 
+    /**
+     * @return array
+     */
     public function findAll(){
         $db = $this->pdo;
         $table = $this->table;
@@ -77,19 +80,51 @@ class ModelFinder
         return $sth->fetchAll();
     }
 
-    public function findOne($id){
-        $db = $this->pdo;
+    /**
+     * @return string
+     */
+    protected function generateFindOneSQL(){
         $table = $this->table;
         $columns = implode(',', $this->columns);
         $sql = "SELECT id, {$columns} FROM {$table} WHERE id=:id";
+        return $sql;
+    }
+
+    /**
+     * @param $id
+     * @return object
+     */
+    public function findOne($id){
+        $db = $this->pdo;
+        $sql = $this->generateFindOneSQL();
         $sth = $db->prepare($sql);
         $sth->setFetchMode(\PDO::FETCH_CLASS, $this->modelName);
         $sth->bindParam(':id', $id);
         $sth->execute();
-        return $sth->fetchAll();
+        return $sth->fetch();
     }
 
-    protected function generateFindBySQL(array $conditions, array $orderBy=['id'=>'asc'], $offset=0, $limit=12){
+    /**
+     * @param $id
+     * @return array
+     */
+    public function findOneWithArr($id){
+        $db = $this->pdo;
+        $sql = $this->generateFindOneSQL();
+        $sth = $db->prepare($sql);
+        $sth->bindParam(':id', $id);
+        $sth->execute();
+        return $sth->fetch();
+    }
+
+    /**
+     * @param array $conditions
+     * @param array $orderBy
+     * @param int $offset
+     * @param int $limit
+     * @return array
+     */
+    protected function generateFindBySQL(array $conditions, array $orderBy=['id'=>'asc'], $offset=12, $limit=0){
         $columns = implode(',', $this->columns);
         $sqlStart = "SELECT id, {$columns} FROM {$this->table} ";
         $where = " WHERE 1=1 ";
@@ -115,7 +150,7 @@ class ModelFinder
             $sorting .= " $field $sort,";
         }
         $sorting = substr($sorting, 0, -1);
-        $limit = " LIMIT {$offset}, {$limit}";
+        $limit = " LIMIT {$limit}, {$offset}";
         $sql = $sqlStart.$where.$sorting.$limit;
         return [
             $sql,
@@ -123,7 +158,14 @@ class ModelFinder
         ];
     }
 
-    public function findBy(array $conditions, array $orderBy=['id'=>'asc'], $offset=0, $limit=12){
+    /**
+     * @param array $conditions
+     * @param array $orderBy
+     * @param int $offset
+     * @param int $limit
+     * @return array
+     */
+    public function findBy(array $conditions, array $orderBy=['id'=>'asc'], $offset=12, $limit=0){
         list($sql, $params) = $this->generateFindBySQL($conditions, $orderBy, $offset, $limit);
 
         $sth = $this->pdo->prepare($sql);
@@ -132,10 +174,60 @@ class ModelFinder
         return $sth->fetchAll();
     }
 
-    public function findByWithArr(array $conditions, array $orderBy=['id'=>'asc'], $offset=0, $limit=12){
+    /**
+     * @param array $conditions
+     * @param array $orderBy
+     * @param int $offset
+     * @param int $limit
+     * @return array
+     */
+    public function findByWithArr(array $conditions, array $orderBy=['id'=>'asc'], $offset=12, $limit=0){
         list($sql, $params) = $this->generateFindBySQL($conditions, $orderBy, $offset, $limit);
         $sth = $this->pdo->prepare($sql);
         $sth->execute($params);
         return $sth->fetchAll();
     }
+
+    /**
+     * @return int
+     */
+    public function count(){
+        $sql = "SELECT COUNT(*) AS cnt FROM {$this->table}";
+        $sth = $this->pdo->prepare($sql);
+        $sth->execute();
+        $res = $sth->fetch();
+        return $res['cnt'];
+    }
+
+    /**
+     * @param array $conditions
+     * @return int
+     */
+    public function countBy(array $conditions){
+        $sqlStart = "SELECT COUNT(*) AS cnt FROM {$this->table} ";
+        $where = " WHERE 1=1 ";
+        $params = [];
+        foreach ($conditions as $field=>$value){
+            if(is_array($value)){
+                $values = "";
+                foreach ($value as $k=>$subValue){
+                    $values .= ":{$field}$k,";
+                    $params[$field.$k] = $subValue;
+                }
+                $where .= " AND {$field} in (".substr($values, 0, -1).")";
+            }elseif (is_null($value)){
+                $where .= " AND $field is :$field ";
+                $params[$field] = $value;
+            }else{
+                $where .= " AND $field = :$field ";
+                $params[$field] = $value;
+            }
+        }
+        $sql = $sqlStart.$where;
+        $sth = $this->pdo->prepare($sql);
+        $sth->execute($params);
+        $res = $sth->fetch();
+        return $res['cnt'];
+    }
+
 }

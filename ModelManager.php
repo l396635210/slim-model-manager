@@ -161,8 +161,10 @@ class ModelManager
             if($value instanceof \DateTime){
                 $value = $value->format('Y-m-d H:i:s');
             }
-            $sth->bindParam($column, $value, $pdoType);
+
+            $sth->bindValue($column, $value, $pdoType);
         }
+
         $sth->execute();
 
         $id = $this->pdo->lastInsertId();
