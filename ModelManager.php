@@ -92,7 +92,7 @@ class ModelManager
             ]).'Finder';
     }
 
-    public static function getInstance(\PDO $PDO, array $relations){
+    public static function getInstance(\PDO $PDO=null, array $relations=null){
         $self = self::$instance;
         if(!$self){
             self::$instance = new self($PDO, $relations);
