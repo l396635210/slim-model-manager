@@ -1,0 +1,28 @@
+{
+  "name" : "liz/model-manager",
+  "description" : "a slim model manager",
+  "type" : "model manager",
+  "authors" : [{
+    "name" : "liz",
+    "email" : "demo@company.com"
+  }],
+  "keywords" : [
+    "slim model console"
+  ],
+  "license" : [
+    "MIT"
+  ],
+  "require" : {
+    "php": ">=5.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "Liz\\ModelManager\\": ""
+    }
+  },
+  "extra" : {
+    "branch-alias" : {
+      "dev-master" : "some_version-dev"
+    }
+  }
+}
