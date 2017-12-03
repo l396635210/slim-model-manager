@@ -18,7 +18,9 @@ class ModelHelper
     protected static $mapping = [
         'int'       => \PDO::PARAM_INT,
         'smallint'  => \PDO::PARAM_INT,
+        'mediumint' => \PDO::PARAM_INT,
         'bigint'    => \PDO::PARAM_INT,
+        'decimal'   => \PDO::PARAM_STR,
         'char'      => \PDO::PARAM_STR,
         'varchar'   => \PDO::PARAM_STR,
         'text'      => \PDO::PARAM_STR,
