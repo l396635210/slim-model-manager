@@ -40,4 +40,9 @@ class ModelHelper
         return self::$mapping[strtolower($type)];
     }
 
+    public static function _2hump($str, $ucFirst=true){
+        $tmp = ucwords(strtr($str,['_'=>' ']));
+        return $ucFirst ? strtr($tmp,[' '=>'']) : strtr(lcfirst($tmp), [' '=>'']);
+    }
+
 }

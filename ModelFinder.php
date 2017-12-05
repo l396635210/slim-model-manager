@@ -105,6 +105,19 @@ class ModelFinder
     }
 
     /**
+     * @param array $conditions
+     * @return mixed
+     */
+    public function findOneBy(array $conditions){
+        $db = $this->pdo;
+        list($sql, $params) = $this->generateFindBySQL($conditions, [], 1);
+        $sth = $db->prepare($sql);
+        $sth->setFetchMode(\PDO::FETCH_CLASS, $this->modelName);
+        $sth->execute($params);
+        return $sth->fetch();
+    }
+
+    /**
      * @param $id
      * @return array
      */

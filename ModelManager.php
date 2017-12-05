@@ -156,8 +156,8 @@ class ModelManager
         $sth = $this->pdo->prepare($sql);
         foreach ($fields as $column=>$desc){
             $pdoType = $this->modelHelper->fetchPdoTypeByFieldInfo($desc);
-            $method = 'get'.$column;
-            $value = $model->$method();
+            $getter = 'get'.$this->modelHelper->_2hump($column);
+            $value = $model->$getter();
             if($value instanceof \DateTime){
                 $value = $value->format('Y-m-d H:i:s');
             }
