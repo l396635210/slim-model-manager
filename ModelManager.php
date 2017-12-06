@@ -29,6 +29,11 @@ class ModelManager
     private $finder;
 
     /**
+     * @var MappingTable
+     */
+    private $mappingTable;
+
+    /**
      * @var \PDO
      */
     private $pdo;
@@ -42,6 +47,11 @@ class ModelManager
      * @var array
      */
     private $models=[];
+
+    /**
+     * @var array
+     */
+    private $removes = [];
 
     /**
      * @return mixed
@@ -86,6 +96,13 @@ class ModelManager
         return $this->finder;
     }
 
+    public function getMappingTable($tableName){
+        if(!$this->mappingTable){
+            $this->mappingTable = new MappingTable($this, $tableName);
+        }
+        return $this->mappingTable;
+    }
+
     protected function getFinderByModelName($model){
         return strtr($model, [
                 'Model'=>'Finder',
@@ -112,6 +129,11 @@ class ModelManager
             $this->pdo->beginTransaction();
             foreach ($this->models as $model){
                 $this->submit($model);
+            }
+            foreach ($this->removes as $remove){
+                $sth = $this->pdo->prepare($remove['sql']);
+                $sth->bindValue('id', $remove['params']['id'], \PDO::PARAM_INT);
+                $sth->execute();
             }
             $this->pdo->commit();
         }catch (\Exception $exception){
@@ -194,4 +216,30 @@ class ModelManager
         $data[':id'] = $model->getID();
         $sth->execute($data);
     }
+
+
+    /**
+     * @param $model
+     * @param bool $hard
+     * @param string $field
+     * @return bool
+     */
+    public function remove(&$model, $hard=true, $field='status'){
+        if($model->getID()){
+            $tableInfo = $this->parseModel($model);
+            $table = $tableInfo['table'];
+            if(!$hard){
+                $sql = "DELETE FROM {$table} WHERE id = :id LIMIT 1 ";
+            }else{
+                $sql = "UPDATE {$table} SET {$field} = 0 WHERE id = :id LIMIT 1 ";
+            }
+            $id = $model->getID();
+            $this->removes[] = [
+                'sql' => $sql,
+                'params' => ['id'=>$id],
+            ];
+        }
+        return (bool)$model->getID();
+    }
+
 }
