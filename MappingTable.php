@@ -168,7 +168,6 @@ class MappingTable
             $set = ModelManager::getInstance()->getFinder($setClass)->findBy([
                 'id' => $ids
             ]);
-
         }
         return $set;
     }
