@@ -111,6 +111,7 @@ class ModelFinder
     public function findOneBy(array $conditions){
         $db = $this->pdo;
         list($sql, $params) = $this->generateFindBySQL($conditions, [], 1);
+
         $sth = $db->prepare($sql);
         $sth->setFetchMode(\PDO::FETCH_CLASS, $this->modelName);
         $sth->execute($params);
@@ -137,7 +138,8 @@ class ModelFinder
      * @param int $limit
      * @return array
      */
-    protected function generateFindBySQL(array $conditions, array $orderBy=['id'=>'asc'], $offset=12, $limit=0){
+    protected function generateFindBySQL(array $conditions, array $orderBy=[], $offset=12, $limit=0){
+        $orderBy= $orderBy ? $orderBy : ['id'=>'asc'];
         $columns = implode(',', $this->columns);
         $sqlStart = "SELECT id, {$columns} FROM {$this->table} ";
         $where = " WHERE 1=1 ";
@@ -147,7 +149,7 @@ class ModelFinder
                 $values = "";
                 foreach ($value as $k=>$subValue){
                     $values .= ":{$field}$k,";
-                    $params[$field.$k] = $subValue;
+                    $params[$field.$k] = trim($subValue);
                 }
                 $where .= " AND {$field} in (".substr($values, 0, -1).")";
             }elseif (is_null($value)){
@@ -155,7 +157,7 @@ class ModelFinder
                 $params[$field] = $value;
             }else{
                 $where .= " AND $field = :$field ";
-                $params[$field] = $value;
+                $params[$field] = trim($value);
             }
         }
         $sorting = " ORDER BY ";
@@ -225,7 +227,7 @@ class ModelFinder
                 $values = "";
                 foreach ($value as $k=>$subValue){
                     $values .= ":{$field}$k,";
-                    $params[$field.$k] = $subValue;
+                    $params[$field.$k] = trim($subValue);
                 }
                 $where .= " AND {$field} in (".substr($values, 0, -1).")";
             }elseif (is_null($value)){
@@ -233,7 +235,7 @@ class ModelFinder
                 $params[$field] = $value;
             }else{
                 $where .= " AND $field = :$field ";
-                $params[$field] = $value;
+                $params[$field] = trim($value);
             }
         }
         $sql = $sqlStart.$where;

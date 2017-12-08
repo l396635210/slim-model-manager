@@ -183,8 +183,7 @@ class ModelManager
             if($value instanceof \DateTime){
                 $value = $value->format('Y-m-d H:i:s');
             }
-
-            $sth->bindValue($column, $value, $pdoType);
+            $sth->bindValue($column, trim($value), $pdoType);
         }
 
         $sth->execute();
@@ -208,7 +207,7 @@ class ModelManager
             if($value instanceof \DateTime){
                 $value = $value->format('Y-m-d H:i:s');
             }
-            $data[':'.$column] = $value;
+            $data[':'.$column] = trim($value);
         }
         $sqlEnd = " WHERE id = :id;";
         $sql = $sqlStart.implode(',', $sqlBody).$sqlEnd;
