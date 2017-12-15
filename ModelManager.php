@@ -159,9 +159,10 @@ class ModelManager
         }else{
             $class = $model;
         }
-        list($bundle,$model) = explode('\model\\',strtolower($class));
+        $bundle= explode('\model\\',strtolower($class))[0];
+        $model = explode('\Model\\',$class)[1];
 
-        $table = $this->relations[$bundle][$model];
+        $table = $this->relations[$bundle][ModelHelper::hump2_($model)];
 
         return $table;
     }

@@ -45,4 +45,9 @@ class ModelHelper
         return $ucFirst ? strtr($tmp,[' '=>'']) : strtr(lcfirst($tmp), [' '=>'']);
     }
 
+    public static function hump2_($camelCaps,$separator='_')
+    {
+        return strtolower(preg_replace('/([a-z])([A-Z])/', "$1" . $separator . "$2", $camelCaps));
+    }
+
 }

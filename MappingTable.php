@@ -120,10 +120,20 @@ class MappingTable
         $where = " WHERE 1=1 ";
         $params = [];
         foreach ($conditions as $field=>$value){
-            $where .= " AND $field = :$field ";
-            $params[$field] = $value;
+            if(is_array($value)){
+                $values = "";
+                foreach ($value as $k=>$subValue){
+                    $values .= ":{$field}$k,";
+                    $params[$field.$k] = trim($subValue);
+                }
+                $where .= " AND {$field} in (".substr($values, 0, -1).")";
+            }else{
+                $where .= " AND $field = :$field ";
+                $params[$field] = $value;
+            }
         }
         $sql = $sqlStart.$where;
+
         $sth = $this->pdo->prepare($sql);
         $sth->execute($params);
         return $sth->rowCount();
