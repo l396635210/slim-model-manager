@@ -137,7 +137,7 @@ class ModelManager
             }
             $this->pdo->commit();
         }catch (\Exception $exception){
-            echo $exception->getMessage();
+            var_dump($exception->getMessage());
             $this->pdo->rollBack();die;
         }
 
