@@ -125,7 +125,7 @@ class ModelManager
     }
 
     public function flush(){
-        try{
+        //try{
             $this->pdo->beginTransaction();
             foreach ($this->models as $model){
                 $this->submit($model);
@@ -136,10 +136,12 @@ class ModelManager
                 $sth->execute();
             }
             $this->pdo->commit();
+            /*
         }catch (\Exception $exception){
             echo $exception->getMessage();
             $this->pdo->rollBack();
         }
+            */
 
     }
 
