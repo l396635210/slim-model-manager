@@ -202,13 +202,15 @@ class ModelManager
         $sqlBody = [];
         $data = [];
         foreach ($fields as $column=>$desc){
-            $sqlBody[] = $column.' = :'.$column;
             $method = 'get'.$column;
             $value = $model->$method();
-            if($value instanceof \DateTime){
-                $value = $value->format('Y-m-d H:i:s');
+            if($value!==null || trim($value)!==''){
+                $sqlBody[] = $column.' = :'.$column;
+                if($value instanceof \DateTime){
+                    $value = $value->format('Y-m-d H:i:s');
+                }
+                $data[':'.$column] = trim($value);
             }
-            $data[':'.$column] = trim($value);
         }
         $sqlEnd = " WHERE id = :id;";
         $sql = $sqlStart.implode(',', $sqlBody).$sqlEnd;
