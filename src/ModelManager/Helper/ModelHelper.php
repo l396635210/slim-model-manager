@@ -24,6 +24,7 @@ class ModelHelper
         'char'      => \PDO::PARAM_STR,
         'varchar'   => \PDO::PARAM_STR,
         'text'      => \PDO::PARAM_STR,
+        'longtext'      => \PDO::PARAM_STR,
         'tinyint'   => \PDO::PARAM_BOOL,
         'date'      => \PDO::PARAM_STR,
         'time'      => \PDO::PARAM_STR,
