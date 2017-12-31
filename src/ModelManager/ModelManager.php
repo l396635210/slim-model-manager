@@ -241,7 +241,7 @@ class ModelManager
                 'params' => ['id'=>$id],
             ];
         }
-        return (bool)$model->getID();
+        return $model->getID();
     }
 
 }
