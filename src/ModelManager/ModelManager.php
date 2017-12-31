@@ -202,7 +202,7 @@ class ModelManager
         $sqlBody = [];
         $data = [];
         foreach ($fields as $column=>$desc){
-            $method = 'get'.$column;
+            $method = 'get'.ModelHelper::_2hump($column);
             $value = $model->$method();
             if($value!==null || trim($value)!==''){
                 $sqlBody[] = $column.' = :'.$column;
