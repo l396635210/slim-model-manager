@@ -180,7 +180,7 @@ class ModelFinder
      * @param int $limit
      * @return array
      */
-    public function findBy(array $conditions, array $orderBy=['id'=>'asc'], $offset=12, $limit=0){
+    public function findBy(array $conditions, array $orderBy=['id'=>'asc'], $offset=1000, $limit=0){
         list($sql, $params) = $this->generateFindBySQL($conditions, $orderBy, $offset, $limit);
 
         $sth = $this->pdo->prepare($sql);

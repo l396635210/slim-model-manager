@@ -224,7 +224,7 @@ class ModelManager
      * @param $model
      * @param bool $hard
      * @param string $field
-     * @return bool
+     * @return int
      */
     public function remove(&$model, $hard=true, $field='status'){
         if($model->getID()){
