@@ -230,7 +230,7 @@ class ModelManager
         if($model->getID()){
             $tableInfo = $this->parseModel($model);
             $table = $tableInfo['table'];
-            if(!$hard){
+            if($hard){
                 $sql = "DELETE FROM {$table} WHERE id = :id LIMIT 1 ";
             }else{
                 $sql = "UPDATE {$table} SET {$field} = 0 WHERE id = :id LIMIT 1 ";
