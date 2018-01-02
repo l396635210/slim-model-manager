@@ -181,8 +181,13 @@ class ModelManager
             $pdoType = $this->modelHelper->fetchPdoTypeByFieldInfo($desc);
             $getter = 'get'.$this->modelHelper->_2hump($column);
             $value = $model->$getter();
+            $sqlBody[] = $column.' = :'.$column;
             if($value instanceof \DateTime){
                 $value = $value->format('Y-m-d H:i:s');
+            }elseif ($value===true){
+                $value = 1;
+            }elseif ($value===false){
+                $value = 0;
             }
             $sth->bindValue($column, trim($value), $pdoType);
         }
@@ -208,6 +213,10 @@ class ModelManager
                 $sqlBody[] = $column.' = :'.$column;
                 if($value instanceof \DateTime){
                     $value = $value->format('Y-m-d H:i:s');
+                }elseif ($value===true){
+                    $value = 1;
+                }elseif ($value===false){
+                    $value = 0;
                 }
                 $data[':'.$column] = trim($value);
             }
