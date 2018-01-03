@@ -128,6 +128,7 @@ class ModelManager
         try {
             $this->pdo->beginTransaction();
             call_user_func($callback);
+            $this->pdo->commit();
         }catch (\Exception $exception){
             var_dump($exception->getMessage());
             $this->pdo->rollBack();die;
