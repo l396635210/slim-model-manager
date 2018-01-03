@@ -124,6 +124,16 @@ class ModelManager
         return $this;
     }
 
+    public function transaction(callable $callback){
+        try {
+            $this->pdo->beginTransaction();
+            call_user_func($callback);
+        }catch (\Exception $exception){
+            var_dump($exception->getMessage());
+            $this->pdo->rollBack();die;
+        }
+    }
+
     public function flush(){
         try{
             $this->pdo->beginTransaction();
@@ -167,7 +177,7 @@ class ModelManager
         return $table;
     }
 
-    protected function insert(&$model){
+    public function insert(&$model){
         $tableInfo = $this->parseModel($model);
         $table = $tableInfo['table'];
         $fields = $tableInfo['fields'];
@@ -198,7 +208,7 @@ class ModelManager
         $model->setID($id);
     }
 
-    protected function update(&$model){
+    public function update(&$model){
         $tableInfo = $this->parseModel($model);
         $table = $tableInfo['table'];
         $fields = $tableInfo['fields'];
