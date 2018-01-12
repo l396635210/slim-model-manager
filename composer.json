@@ -1,7 +1,7 @@
 {
   "name" : "liz/model-manager",
   "description" : "a slim model manager",
-  "type" : "model manager",
+  "type" : "library",
   "authors" : [{
     "name" : "liz",
     "email" : "demo@company.com"
@@ -22,7 +22,7 @@
   },
   "extra" : {
     "branch-alias" : {
-      "dev-master" : "some_version-dev"
+      "dev-master" : "0.1-dev"
     }
   }
 }
