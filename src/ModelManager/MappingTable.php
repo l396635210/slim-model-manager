@@ -171,7 +171,7 @@ class MappingTable
     public function findSet($model, $setClass, $setID, $withArr=false){
         $set = [];
         $mappings = $this->findByWithArr([
-            'article_id' => $model->getID(),
+            $setID => $model->getID(),
         ]);
         if($mappings){
             $ids = array_column($mappings, $setID);
