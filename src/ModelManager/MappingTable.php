@@ -168,10 +168,12 @@ class MappingTable
         }
     }
 
-    public function findSet($model, $setClass, $setID, $withArr=false){
+    public function findSet($model, $setClass, $mapping, $withArr=false){
+        $mapID = key($mapping);
+        $setID = current($mapping);
         $set = [];
         $mappings = $this->findByWithArr([
-            'article_id' => $model->getID(),
+            $mapID => $model->getID(),
         ]);
         if($mappings){
             $ids = array_column($mappings, $setID);
