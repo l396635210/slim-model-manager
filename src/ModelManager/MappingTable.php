@@ -46,7 +46,7 @@ class MappingTable
      * @param int $limit
      * @return array
      */
-    protected function generateFindBySQL(array $conditions, array $orderBy=['id'=>'asc'], $offset=12, $limit=0){
+    protected function generateFindBySQL(array $conditions, array $orderBy=['id'=>'asc'], $offset=1000, $limit=0){
         $sqlStart = "SELECT * FROM {$this->table} ";
         $where = " WHERE 1=1 ";
         $params = [];
@@ -85,7 +85,7 @@ class MappingTable
      * @param int $limit
      * @return array
      */
-    protected function findByWithArr(array $conditions, array $orderBy=['id'=>'asc'], $offset=12, $limit=0){
+    protected function findByWithArr(array $conditions, array $orderBy=['id'=>'asc'], $offset=1000, $limit=0){
         list($sql, $params) = $this->generateFindBySQL($conditions, $orderBy, $offset, $limit);
         $sth = $this->pdo->prepare($sql);
         $sth->execute($params);

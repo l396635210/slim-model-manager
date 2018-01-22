@@ -138,7 +138,7 @@ class ModelFinder
      * @param int $limit
      * @return array
      */
-    protected function generateFindBySQL(array $conditions, array $orderBy=[], $offset=12, $limit=0){
+    protected function generateFindBySQL(array $conditions, array $orderBy=[], $offset=1000, $limit=0){
         $orderBy= $orderBy ? $orderBy : ['id'=>'asc'];
         $columns = implode(',', $this->columns);
         $sqlStart = "SELECT id, {$columns} FROM {$this->table} ";
@@ -196,7 +196,7 @@ class ModelFinder
      * @param int $limit
      * @return array
      */
-    public function findByWithArr(array $conditions, array $orderBy=['id'=>'asc'], $offset=12, $limit=0){
+    public function findByWithArr(array $conditions, array $orderBy=['id'=>'asc'], $offset=1000, $limit=0){
         list($sql, $params) = $this->generateFindBySQL($conditions, $orderBy, $offset, $limit);
         $sth = $this->pdo->prepare($sql);
         $sth->execute($params);
