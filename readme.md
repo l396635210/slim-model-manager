@@ -51,10 +51,9 @@ BaseController
     $this->modelManager->getFinder(ClassNameToString)->findOne($id);
   ``` 
 
-- example: insert or update
-  - find list
+- example: insert or update    
+    if the model's id is a number will update else insert
   ```php
-    //if the model's id is a number will update else insert
     $this->modelManager->persist($model)
             ->flush();
   ```     
